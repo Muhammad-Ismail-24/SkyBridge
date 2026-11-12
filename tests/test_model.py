@@ -215,12 +215,13 @@ def test_circuit_is_parameterised_qaoa_from_actual_hamiltonian():
         names = {p.name for p in circ.parameters}
         assert {f"γ[{k}]" for k in range(reps)} <= names
         assert {f"β[{k}]" for k in range(reps)} <= names
-    # The cost layer is the evolution of our operator: decomposing it must yield
-    # one RZZ per ZZ term and one RZ per Z term of H_C.
-    circ = Q.build_qaoa_circuit(ham, 1).decompose(reps=3)
+    # The cost layer must contain one RZZ per ZZ term and one RZ per Z term.
+    circ = Q.build_qaoa_circuit(ham, 1)
     ops = circ.count_ops()
     n_zz = sum(1 for lab, _ in ham.operator.to_list() if lab.count("Z") == 2)
-    assert ops.get("rzz", 0) + ops.get("cx", 0) // 2 >= n_zz
+    n_z = sum(1 for lab, _ in ham.operator.to_list() if lab.count("Z") == 1)
+    assert ops.get("rzz", 0) == n_zz
+    assert ops.get("rz", 0) == n_z
 
 
 def test_expectation_matches_statevector_on_diagonal():
@@ -254,6 +255,21 @@ def test_qaoa_run_produces_real_samples(qaoa_run):
     for s in r.samples:
         assert s.bits == M.qiskit_bitstring_to_bits(s.bitstring_qiskit)
         assert s.qubo_energy == pytest.approx(qubo.energy(s.bits))
+
+
+def test_metadata_gate_expansion_preserves_qaoa_state():
+    from qiskit.quantum_info import Statevector
+
+    qubo = M.build_qubo(ref.reference_scenario())
+    ham = M.build_hamiltonian(qubo)
+    circuit = Q.build_qaoa_circuit(ham, 1, ham.max_abs_coefficient())
+    expanded = Q._measurement_basis_circuit(circuit)
+    params = [0.31, -0.42]
+    original_state = Statevector(circuit.assign_parameters(params)).data
+    expanded_state = Statevector(expanded.assign_parameters(params)).data
+    assert np.allclose(original_state, expanded_state)
+    assert expanded.count_ops().get("rzz", 0) == 0
+    assert expanded.count_ops()["cx"] == 2 * circuit.count_ops()["rzz"]
 
 
 def test_optimised_expectation_beats_uniform_superposition(qaoa_run):

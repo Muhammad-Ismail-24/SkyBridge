@@ -32,7 +32,6 @@ import numpy as np
 from scipy.optimize import minimize
 
 import qiskit
-from qiskit import transpile
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library import qaoa_ansatz
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
@@ -156,6 +155,25 @@ def build_qaoa_circuit(ham: HamiltonianSpec, reps: int, scale: float = 1.0) -> Q
     return qaoa_ansatz(ham.operator / scale, reps=reps)
 
 
+def _measurement_basis_circuit(circuit: QuantumCircuit) -> QuantumCircuit:
+    """Expand RZZ into CX-RZ-CX for reproducible circuit resource counts.
+
+    The ansatz already consists of H, RX, RZ and RZZ gates. Qiskit's general
+    transpiler can take minutes on this parameterised circuit on Windows, even
+    though the equivalent local expansion is exact and takes milliseconds.
+    """
+    expanded = circuit.copy_empty_like()
+    for instruction in circuit.data:
+        operation, qubits, clbits = instruction.operation, instruction.qubits, instruction.clbits
+        if operation.name == "rzz":
+            expanded.cx(qubits[0], qubits[1])
+            expanded.rz(operation.params[0], qubits[1])
+            expanded.cx(qubits[0], qubits[1])
+        else:
+            expanded.append(operation, qubits, clbits)
+    return expanded
+
+
 def _param_order(circuit: QuantumCircuit) -> tuple[list, list]:
     betas = sorted((p for p in circuit.parameters if p.name.startswith("β")), key=lambda p: p.index)
     gammas = sorted((p for p in circuit.parameters if p.name.startswith("γ")), key=lambda p: p.index)
@@ -264,16 +282,11 @@ def solve_qaoa(
         )
     samples.sort(key=lambda s: (-s.count, s.bits))
 
-    compiled = transpile(
-        measured.assign_parameters([values[p] for p in ordered]),
-        basis_gates=["rz", "sx", "x", "cx", "h", "rx", "measure"],
-        optimization_level=1,
-        seed_transpiler=seed,
-    )
+    compiled = _measurement_basis_circuit(measured)
     ops = {k: int(v) for k, v in compiled.count_ops().items()}
 
     return QuantumResult(
-        ran_qiskit=True,
+        ran_qiskit=bool(counts) and sum(counts.values()) == int(shots),
         backend=SAMPLER_NAME,
         n_qubits=ansatz.num_qubits,
         reps=reps,

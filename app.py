@@ -79,7 +79,7 @@ def _source_label(record: dict) -> str:
     return f"Precomputed run artifact: {producer or 'producer unspecified'}"
 
 
-def network_dot(record: dict, bits: list[int]) -> str:
+def network_dot(record: dict, bits: list[int], *, disabled_drones: list[str] | tuple[str, ...] | None = None) -> str:
     """Draw only links present in Ismail's scenario adjacency matrix."""
     meta = record.get("scenario_meta") or {}
     nodes, matrix = meta.get("link_nodes"), meta.get("link_matrix")
@@ -87,7 +87,9 @@ def network_dot(record: dict, bits: list[int]) -> str:
         raise ValueError("Production link matrix is unavailable")
     enabled = {"BASE": True, "TEAM": True, "HILL": bool(bits[0]),
                "VALLEY_B": bool(bits[2]), "VALLEY_C": bool(bits[4])}
-    disabled = {"VALLEY_B"} if "B" in (meta.get("disabled_drones") or []) else set()
+    if disabled_drones is None:
+        disabled_drones = meta.get("disabled_drones") or []
+    disabled = {"VALLEY_B"} if "B" in disabled_drones else set()
     reachable = {"BASE"}
     frontier = ["BASE"]
     while frontier:
@@ -120,6 +122,34 @@ def network_dot(record: dict, bits: list[int]) -> str:
     return "\n".join(lines)
 
 
+def solver_metadata(record: dict) -> dict:
+    """Expose the fields actually written by the production pipeline."""
+    quantum = record["quantum"]
+    return {
+        "scenario": record["scenario"],
+        "policy": record.get("policy"),
+        "seed": record.get("seed"),
+        "timestamp": record.get("timestamp"),
+        "backend": quantum.get("backend"),
+        "shots": quantum.get("shots"),
+        "qaoa_reps": quantum.get("qaoa_reps"),
+        "n_qubits": record["model"].get("n_binary"),
+        "maxiter": quantum.get("maxiter"),
+        "optimizer_function_evaluations": quantum.get("optimizer_function_evaluations", quantum.get("optimizer_iterations")),
+        "evaluation_counts": quantum.get("evaluation_counts"),
+        "elapsed_seconds": quantum.get("elapsed_seconds"),
+        "circuit_depth": quantum.get("circuit_depth"),
+        "circuit_two_qubit_gates": quantum.get("circuit_two_qubit_gates"),
+        "optimal_params": quantum.get("optimal_params"),
+        "shots_note": quantum.get("shots_note"),
+        "diagnostics": quantum.get("diagnostics"),
+        "penalty": record["model"].get("penalty"),
+        "software_versions": record.get("software_versions"),
+        "producer": record.get("producer"),
+        "output_file": record.get("output_file"),
+    }
+
+
 def main() -> None:
     import streamlit as st
 
@@ -140,13 +170,15 @@ def main() -> None:
     quantum, exact, comparison = (record[k] for k in ("quantum", "exact", "comparison"))
     if not quantum.get("ran_qiskit"):
         st.warning("This record has no verified Qiskit execution. Quantum metrics are unavailable.")
-    cols = st.columns(4)
+    cols = st.columns(5)
     cols[0].metric("QAOA sampled best utility", f"{quantum['utility']:.2f}" if quantum.get("utility") is not None else "No feasible sample")
     cols[1].metric("Exact optimum utility", f"{exact['utility']:.2f}" if exact.get("utility") is not None else "Unavailable")
     gap = comparison.get("absolute_gap")
     cols[2].metric("Absolute gap", f"{gap:.2f}" if gap is not None else "Unavailable")
+    relative_gap = comparison.get("relative_gap_pct")
+    cols[3].metric("Relative gap", f"{relative_gap:.1f}%" if relative_gap is not None else "Unavailable")
     connected = (quantum.get("breakdown") or {}).get("connected_teams")
-    cols[3].metric("Rescue team connected", "Yes" if connected else "No" if connected == 0 else "Unknown")
+    cols[4].metric("Rescue team connected", "Yes" if connected else "No" if connected == 0 else "Unknown")
     st.subheader("Mission assignments")
     rows = assignment_rows(record)
     if rows:
@@ -164,27 +196,35 @@ def main() -> None:
     if comparison.get("no_speedup_note"):
         st.caption(comparison["no_speedup_note"])
     st.subheader("Communication network")
-    if record.get("scenario_meta", {}).get("link_matrix") and quantum.get("best_feasible_bits"):
-        st.graphviz_chart(network_dot(record, quantum["best_feasible_bits"]), width="stretch")
-        st.caption("Green is reachable from base; amber is an active but disconnected region; gray is an available inactive link; red dashed links touch a disabled drone. Only edges in the saved adjacency matrix are drawn. " + record["scenario_meta"].get("link_label", ""))
-    else:
-        st.warning("A valid production adjacency matrix or feasible QAOA assignment is unavailable; no radio links are drawn.")
-    if record["scenario"] == "relay_failure":
-        st.subheader("Self healing")
-        healing = record.get("healing")
-        if healing:
+    has_map = bool(record.get("scenario_meta", {}).get("link_matrix"))
+    if record["scenario"] == "relay_failure" and record.get("healing") and has_map:
+        healing = record["healing"]
+        st.caption("Before failure → B fails without a new solve → QAOA replans with C as the valley relay.")
+        try:
             stages = st.columns(3)
+            initial_mission = healing["before"]["quantum"]["breakdown"]["mission_score"]
             for col, key, title in zip(stages, ("before", "immediately_after_failure", "replanned"), ("Normal", "B failed before replanning", "Re-optimised")):
                 state = healing[key]["quantum"]
                 col.markdown(f"**{title}**")
+                col.graphviz_chart(network_dot(record, state["bits"], disabled_drones=[] if key == "before" else ["B"]), width="stretch")
                 col.write(", ".join(state.get("roles", [])))
-                col.metric("Utility", f"{state['breakdown']['total_utility']:.2f}")
+                breakdown = state["breakdown"]
+                col.metric("Utility", f"{breakdown['total_utility']:.2f}")
+                col.metric("Mission score", f"{breakdown['mission_score']:.2f}",
+                           delta=f"{breakdown['mission_score'] - initial_mission:+.2f} vs normal" if key != "before" else None)
+                col.caption(f"Energy penalty {breakdown['energy_penalty']:.2f}; connectivity bonus {breakdown['connectivity_bonus']:.2f}")
                 col.write(f"Team connected: {bool(state.get('connected_teams'))}")
             st.caption(healing.get("before_source", "") + ". The immediate failure state is evaluated without a new solve; replanned state comes from the QAOA run.")
-        else:
-            st.warning("A three-stage healing trace is not in this run artifact.")
+        except (KeyError, TypeError, ValueError) as exc:
+            st.warning(f"The saved three-stage healing trace is incomplete: {exc}")
+    elif has_map and quantum.get("best_feasible_bits"):
+        st.graphviz_chart(network_dot(record, quantum["best_feasible_bits"]), width="stretch")
+    else:
+        st.warning("A valid production adjacency matrix or feasible QAOA assignment is unavailable; no radio links are drawn.")
+    if has_map:
+        st.caption("Green is reachable from base; amber is an active but disconnected region; gray is an available inactive link; red dashed links touch a disabled drone. Only edges in the saved adjacency matrix are drawn. " + record["scenario_meta"].get("link_label", ""))
     with st.expander("Run provenance and solver metadata"):
-        st.json({"producer": record.get("producer"), "generated_at": record.get("generated_at"), "quantum_run": quantum.get("run"), "software_versions": record.get("software_versions")})
+        st.json(solver_metadata(record))
 
 
 if __name__ == "__main__":

@@ -86,7 +86,7 @@ def _bits(raw: Any) -> tuple[int, ...] | None:
 NO_SPEEDUP_NOTE = ("No quantum speedup is claimed; the exact enumeration of 256 states "
                    "is classically trivial.")
 TIMING_NOTE = ("quantum elapsed_seconds includes the warm-start grid scan, the optimisation "
-               "loop and a metadata-only transpile; exact elapsed_seconds covers only a "
+               "loop, final sampling and an exact gate expansion for metadata; exact elapsed_seconds covers only a "
                "256-state loop and is not comparable. Timings vary between runs.")
 SHOTS_NOTE = ("shots applies to the final sampling only; the optimisation loop uses the "
               "exact StatevectorEstimator.")
@@ -277,6 +277,7 @@ def _solve(name: str, policy: str, seed: int, shots: int, reps: int, maxiter: in
             "feasible_sample_fraction": frac,
             "shots": q("shots"), "qaoa_reps": q("reps"),
             "optimizer_iterations": q("optimizer_evaluations"),
+            "optimizer_function_evaluations": q("optimizer_evaluations"),
             "elapsed_seconds": q("elapsed_seconds"),
             "breakdown": q_score,
             "status": None if not ran else ("feasible_found" if q_bits else "no_feasible_sample"),
@@ -284,6 +285,7 @@ def _solve(name: str, policy: str, seed: int, shots: int, reps: int, maxiter: in
             "distinct_bitstrings_sampled": len(ranking) if ran else None,
             "backend": q("backend"), "maxiter": q("maxiter"),
             "circuit_depth": q("circuit_depth"),
+            "circuit_two_qubit_gates": q("circuit_two_qubit_gates"),
             "optimal_params": q("optimal_params"),
             "selection_rule": SELECTION_RULE,
             "sample_ranking": ranking if ran else None,

@@ -2,7 +2,7 @@
   "scenario": "base",
   "policy": "balanced",
   "seed": 42,
-  "timestamp": "2026-11-12T18:53:30+05:00",
+  "timestamp": "2026-11-12T19:48:01+05:00",
   "model": {
     "n_binary": 8,
     "penalty": 45.0,
@@ -41,7 +41,8 @@
     "shots": 1024,
     "qaoa_reps": 1,
     "optimizer_iterations": 32,
-    "elapsed_seconds": 1.5103331999998773,
+    "optimizer_function_evaluations": 32,
+    "elapsed_seconds": 0.6105080999986967,
     "breakdown": {
       "mission_score": 15,
       "energy_penalty": 7.5,
@@ -56,6 +57,7 @@
     "backend": "qiskit.primitives.StatevectorSampler",
     "maxiter": 80,
     "circuit_depth": 19,
+    "circuit_two_qubit_gates": 16,
     "optimal_params": {
       "gamma_0": -0.46492437828702504,
       "beta_0": 0.4536507655347377
@@ -2226,7 +2228,7 @@
     ],
     "utility": 29.5,
     "enumerated_states": 256,
-    "elapsed_seconds": 0.0021508999998332,
+    "elapsed_seconds": 0.0018629000005603302,
     "breakdown": {
       "mission_score": 15,
       "energy_penalty": 7.5,
@@ -2243,7 +2245,7 @@
     "relative_gap_pct": 0.0,
     "interpretation": "The gap is 0 because the reported quantum plan is the best feasible bitstring among 1024 shots, not the most frequent one. The exact optimum appeared in 0.0127 of shots versus 0.0039 for uniform random sampling. Uniform random sampling would also contain the optimum in 98.2% of runs, so a zero gap is not evidence that QAOA solved the problem. Most frequent sample: [1, 0, 0, 0, 1, 0, 0, 1] (feasible=True, utility=23.25).",
     "no_speedup_note": "No quantum speedup is claimed; the exact enumeration of 256 states is classically trivial.",
-    "timing_note": "quantum elapsed_seconds includes the warm-start grid scan, the optimisation loop and a metadata-only transpile; exact elapsed_seconds covers only a 256-state loop and is not comparable. Timings vary between runs."
+    "timing_note": "quantum elapsed_seconds includes the warm-start grid scan, the optimisation loop, final sampling and an exact gate expansion for metadata; exact elapsed_seconds covers only a 256-state loop and is not comparable. Timings vary between runs."
   },
   "constraint_checks": {
     "quantum_plan_feasible": true,

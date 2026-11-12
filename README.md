@@ -54,7 +54,7 @@ Run the dashboard after dependencies are installed:
 streamlit run app.py
 ```
 
-Use `.\.venv\Scripts\streamlit.exe run app.py` on Windows or `.venv/bin/streamlit run app.py` on Unix if the executable is not on `PATH`. Select a recorded scenario. The dashboard reads the JSON and shows QAOA and exact scores, assignments, battery budgets, connectivity, solver settings, and provenance. The map draws only edges in the saved adjacency matrix; the relay-failure view uses the saved `healing` trace.
+Use `.\.venv\Scripts\streamlit.exe run app.py` on Windows or `.venv/bin/streamlit run app.py` on Unix if the executable is not on `PATH`. Select a recorded scenario. The dashboard reads the JSON and shows QAOA and exact scores, absolute and relative gap, assignments, battery budgets, connectivity, solver settings, and provenance. The map draws only edges in the saved adjacency matrix. The relay-failure view draws three maps from the saved `healing` trace: normal, immediately after B fails, and QAOA replanned. Each stage shows utility, mission score, energy penalty, connectivity bonus, and team reachability.
 
 Run tests and the structure gate:
 
@@ -76,7 +76,7 @@ The report generator records actual JSON values and their run provenance. `verif
 
 ## Results and limitations
 
-The five committed production runs cover base, relay failure, shadow-blocked link, and two policy presets using seed 42, p=1, and 1024 shots. In the base run, the sampled best feasible and exact optimum both have utility 29.5; the reported gap is zero. That best-of-1024 result is not evidence of quantum advantage: uniform random sampling would also likely include the exact optimum at least once. Read each JSON's `comparison.interpretation` and `quantum.diagnostics` for this context. Utility, energy, battery, and radio reachability are illustrative. The eight-variable test is too small to show computational advantage. QAOA sampling is stochastic, and the topology model covers one team with a two-relay path. No physical drone, live map, real RF propagation, hardware QPU, or safety-critical decision capability is claimed.
+The five committed production runs cover base, relay failure, shadow-blocked link, and two policy presets using seed 42, p=1, and 1024 shots. In the base run, the sampled best feasible and exact optimum both have utility 29.5; the reported gap is zero. That best-of-1024 result is not evidence of quantum advantage: uniform random sampling would also likely include the exact optimum at least once. Read each JSON's `comparison.interpretation` and `quantum.diagnostics` for this context. `optimizer_function_evaluations` counts final COBYLA objective calls; `evaluation_counts` separately records the warm-start grid and total circuit evaluations. The reported circuit depth and two-qubit gate count use an exact CX-RZ-CX expansion of each RZZ gate for metadata. Utility, energy, battery, and radio reachability are illustrative. The eight-variable test is too small to show computational advantage. QAOA sampling is stochastic, and the topology model covers one team with a two-relay path. No physical drone, live map, real RF propagation, hardware QPU, or safety-critical decision capability is claimed.
 
 ## Team and attribution
 

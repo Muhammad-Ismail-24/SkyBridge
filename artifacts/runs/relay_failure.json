@@ -2,7 +2,7 @@
   "scenario": "relay_failure",
   "policy": "balanced",
   "seed": 42,
-  "timestamp": "2026-11-12T18:53:35+05:00",
+  "timestamp": "2026-11-12T19:48:09+05:00",
   "model": {
     "n_binary": 8,
     "penalty": 45.0,
@@ -41,7 +41,8 @@
     "shots": 1024,
     "qaoa_reps": 1,
     "optimizer_iterations": 39,
-    "elapsed_seconds": 1.0715400999997655,
+    "optimizer_function_evaluations": 39,
+    "elapsed_seconds": 0.6559741999990365,
     "breakdown": {
       "mission_score": 8,
       "energy_penalty": 5.5,
@@ -56,6 +57,7 @@
     "backend": "qiskit.primitives.StatevectorSampler",
     "maxiter": 80,
     "circuit_depth": 19,
+    "circuit_two_qubit_gates": 16,
     "optimal_params": {
       "gamma_0": -0.7081253024535958,
       "beta_0": 0.5698263494317578
@@ -2226,7 +2228,7 @@
     ],
     "utility": 24.5,
     "enumerated_states": 256,
-    "elapsed_seconds": 0.0010169999995923718,
+    "elapsed_seconds": 0.0006496999994851649,
     "breakdown": {
       "mission_score": 8,
       "energy_penalty": 5.5,
@@ -2243,7 +2245,7 @@
     "relative_gap_pct": 0.0,
     "interpretation": "The gap is 0 because the reported quantum plan is the best feasible bitstring among 1024 shots, not the most frequent one. The exact optimum appeared in 0.0225 of shots versus 0.0039 for uniform random sampling. Uniform random sampling would also contain the optimum in 98.2% of runs, so a zero gap is not evidence that QAOA solved the problem. Most frequent sample: [1, 0, 0, 0, 0, 0, 0, 0] (feasible=True, utility=-1.0).",
     "no_speedup_note": "No quantum speedup is claimed; the exact enumeration of 256 states is classically trivial.",
-    "timing_note": "quantum elapsed_seconds includes the warm-start grid scan, the optimisation loop and a metadata-only transpile; exact elapsed_seconds covers only a 256-state loop and is not comparable. Timings vary between runs."
+    "timing_note": "quantum elapsed_seconds includes the warm-start grid scan, the optimisation loop, final sampling and an exact gate expansion for metadata; exact elapsed_seconds covers only a 256-state loop and is not comparable. Timings vary between runs."
   },
   "constraint_checks": {
     "quantum_plan_feasible": true,
@@ -2447,7 +2449,7 @@
   "output_file": "artifacts/runs/relay_failure.json",
   "healing": {
     "failed_drone": "B",
-    "before_source": "base run solved in this call (policy=balanced, seed=42, timestamp=2026-11-12T18:53:36+05:00)",
+    "before_source": "base run solved in this call (policy=balanced, seed=42, timestamp=2026-11-12T19:48:10+05:00)",
     "before_run": {
       "quantum": {
         "ran_qiskit": true,
@@ -2465,7 +2467,7 @@
         "relative_gap_pct": 0.0,
         "interpretation": "The gap is 0 because the reported quantum plan is the best feasible bitstring among 1024 shots, not the most frequent one. The exact optimum appeared in 0.0127 of shots versus 0.0039 for uniform random sampling. Uniform random sampling would also contain the optimum in 98.2% of runs, so a zero gap is not evidence that QAOA solved the problem. Most frequent sample: [1, 0, 0, 0, 1, 0, 0, 1] (feasible=True, utility=23.25).",
         "no_speedup_note": "No quantum speedup is claimed; the exact enumeration of 256 states is classically trivial.",
-        "timing_note": "quantum elapsed_seconds includes the warm-start grid scan, the optimisation loop and a metadata-only transpile; exact elapsed_seconds covers only a 256-state loop and is not comparable. Timings vary between runs."
+        "timing_note": "quantum elapsed_seconds includes the warm-start grid scan, the optimisation loop, final sampling and an exact gate expansion for metadata; exact elapsed_seconds covers only a 256-state loop and is not comparable. Timings vary between runs."
       }
     },
     "before": {
