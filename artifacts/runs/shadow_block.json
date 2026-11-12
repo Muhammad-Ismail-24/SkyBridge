@@ -1,0 +1,2424 @@
+{
+  "scenario": "shadow_block",
+  "policy": "balanced",
+  "seed": 42,
+  "timestamp": "2026-11-12T18:53:40+05:00",
+  "model": {
+    "n_binary": 8,
+    "penalty": 23.0,
+    "weights": {
+      "alpha": 0.05,
+      "relay_reward_W": 22.0
+    },
+    "role_order": [
+      "A_H",
+      "A_N",
+      "B_V",
+      "B_Delivery",
+      "C_V",
+      "C_E",
+      "D_Delivery",
+      "D_S"
+    ],
+    "penalty_bound": 22.0,
+    "ising_offset": 19.0,
+    "penalty_derivation": "single-flip bound B = max_i(max(c_i,0) + sum_j W_ij); B = 22 attained at A_H; P = B + margin guarantees every infeasible state has a strictly lower-energy feasible neighbour"
+  },
+  "quantum": {
+    "ran_qiskit": true,
+    "best_feasible_bits": [
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    "utility": 27.0,
+    "feasible_sample_fraction": 0.818359375,
+    "shots": 1024,
+    "qaoa_reps": 1,
+    "optimizer_iterations": 32,
+    "elapsed_seconds": 0.9607178000005661,
+    "breakdown": {
+      "mission_score": 12,
+      "energy_penalty": 7.0,
+      "connectivity_bonus": 22,
+      "total_utility": 27.0,
+      "connected_teams": 1,
+      "feasible": true
+    },
+    "status": "feasible_found",
+    "best_sample_count": 20,
+    "distinct_bitstrings_sampled": 140,
+    "backend": "qiskit.primitives.StatevectorSampler",
+    "maxiter": 80,
+    "circuit_depth": 16,
+    "optimal_params": {
+      "gamma_0": 0.5294506047512699,
+      "beta_0": -0.4477855129074505
+    },
+    "selection_rule": "highest true utility (score_feasible) among sampled assignments that pass is_feasible; ties -> higher count, then smallest canonical tuple",
+    "sample_ranking": [
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 20,
+        "feasible": true,
+        "utility": 27.0
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 44,
+        "feasible": true,
+        "utility": 24.5
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 25,
+        "feasible": true,
+        "utility": 24.25
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 35,
+        "feasible": true,
+        "utility": 23.25
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 49,
+        "feasible": true,
+        "utility": 20.5
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 13,
+        "feasible": true,
+        "utility": 18.25
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 20,
+        "feasible": true,
+        "utility": 15.75
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 18,
+        "feasible": true,
+        "utility": 15.5
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 11,
+        "feasible": true,
+        "utility": 15.0
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 15,
+        "feasible": true,
+        "utility": 14.5
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 11,
+        "feasible": true,
+        "utility": 13.75
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 11,
+        "feasible": true,
+        "utility": 13.0
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 7,
+        "feasible": true,
+        "utility": 12.5
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 16,
+        "feasible": true,
+        "utility": 11.75
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 13,
+        "feasible": true,
+        "utility": 11.75
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 17,
+        "feasible": true,
+        "utility": 11.0
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 12,
+        "feasible": true,
+        "utility": 10.75
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 19,
+        "feasible": true,
+        "utility": 10.5
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 16,
+        "feasible": true,
+        "utility": 10.25
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 16,
+        "feasible": true,
+        "utility": 10.0
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 15,
+        "feasible": true,
+        "utility": 9.75
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 5,
+        "feasible": true,
+        "utility": 9.75
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 21,
+        "feasible": true,
+        "utility": 9.25
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 12,
+        "feasible": true,
+        "utility": 9.25
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 17,
+        "feasible": true,
+        "utility": 9.0
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 16,
+        "feasible": true,
+        "utility": 8.75
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 8,
+        "feasible": true,
+        "utility": 8.5
+      },
+      {
+        "bits": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 7,
+        "feasible": true,
+        "utility": 8.5
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 13,
+        "feasible": true,
+        "utility": 8.25
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 14,
+        "feasible": true,
+        "utility": 8.0
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 11,
+        "feasible": true,
+        "utility": 8.0
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 17,
+        "feasible": true,
+        "utility": 7.5
+      },
+      {
+        "bits": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 11,
+        "feasible": true,
+        "utility": 7.25
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 23,
+        "feasible": true,
+        "utility": 7.0
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 18,
+        "feasible": true,
+        "utility": 6.5
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 5,
+        "feasible": true,
+        "utility": 6.5
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 13,
+        "feasible": true,
+        "utility": 6.25
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 16,
+        "feasible": true,
+        "utility": 6.0
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 3,
+        "feasible": true,
+        "utility": 6.0
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 6,
+        "feasible": true,
+        "utility": 5.75
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 5,
+        "feasible": true,
+        "utility": 5.5
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 12,
+        "feasible": true,
+        "utility": 5.25
+      },
+      {
+        "bits": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 8,
+        "feasible": true,
+        "utility": 4.5
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 18,
+        "feasible": true,
+        "utility": 4.25
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 8,
+        "feasible": true,
+        "utility": 4.0
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": true,
+        "utility": 3.75
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 10,
+        "feasible": true,
+        "utility": 3.5
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 6,
+        "feasible": true,
+        "utility": 3.5
+      },
+      {
+        "bits": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 9,
+        "feasible": true,
+        "utility": 3.25
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 4,
+        "feasible": true,
+        "utility": 3.25
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 10,
+        "feasible": true,
+        "utility": 3.0
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 14,
+        "feasible": true,
+        "utility": 2.75
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 8,
+        "feasible": true,
+        "utility": 2.75
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 4,
+        "feasible": true,
+        "utility": 2.25
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 2,
+        "feasible": true,
+        "utility": 2.25
+      },
+      {
+        "bits": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 8,
+        "feasible": true,
+        "utility": 2.0
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 6,
+        "feasible": true,
+        "utility": 1.75
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 12,
+        "feasible": true,
+        "utility": 1.0
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 10,
+        "feasible": true,
+        "utility": 0.0
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 8,
+        "feasible": true,
+        "utility": -0.5
+      },
+      {
+        "bits": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 9,
+        "feasible": true,
+        "utility": -0.75
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 10,
+        "feasible": true,
+        "utility": -1.0
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 16,
+        "feasible": true,
+        "utility": -1.75
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 18,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 13,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 11,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "count": 9,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "count": 6,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 6,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "count": 5,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 5,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "count": 4,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 4,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 4,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 3,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 3,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 3,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 3,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 3,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 3,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 3,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 3,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 2,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      },
+      {
+        "bits": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "count": 1,
+        "feasible": false,
+        "utility": null
+      }
+    ],
+    "shots_note": "shots applies to the final sampling only; the optimisation loop uses the exact StatevectorEstimator.",
+    "evaluation_counts": {
+      "optimizer_evaluations": 32,
+      "warm_start_evaluations": 144,
+      "total_circuit_evaluations": 176,
+      "note": "optimizer_evaluations counts COBYLA objective calls of the final reported optimisation (not iterations); warm_start_evaluations counts the (gamma, beta) grid scan plus lower-depth passes; total_circuit_evaluations is their sum."
+    },
+    "diagnostics": {
+      "selection_method": "best feasible bitstring (by true utility, src/evaluate.py) among all shots",
+      "shots": 1024,
+      "distinct_samples": 140,
+      "most_frequent_sample": {
+        "bits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "count": 49,
+        "feasible": true,
+        "utility_or_null": 20.5
+      },
+      "optimum_sample_frequency": 0.01953125,
+      "optimum_sample_count": 20,
+      "uniform_baseline": {
+        "feasible_fraction": 0.24609375,
+        "p_hit_optimum_per_shot": 0.00390625,
+        "p_hit_optimum_within_shots": 0.9818272653594924
+      }
+    }
+  },
+  "exact": {
+    "best_bits": [
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    "utility": 27.0,
+    "enumerated_states": 256,
+    "elapsed_seconds": 0.0017513000002509216,
+    "breakdown": {
+      "mission_score": 12,
+      "energy_penalty": 7.0,
+      "connectivity_bonus": 22,
+      "total_utility": 27.0,
+      "connected_teams": 1,
+      "feasible": true
+    },
+    "feasible_states": 63,
+    "infeasible_states": 193
+  },
+  "comparison": {
+    "absolute_gap": 0.0,
+    "relative_gap_pct": 0.0,
+    "interpretation": "The gap is 0 because the reported quantum plan is the best feasible bitstring among 1024 shots, not the most frequent one. The exact optimum appeared in 0.0195 of shots versus 0.0039 for uniform random sampling. Uniform random sampling would also contain the optimum in 98.2% of runs, so a zero gap is not evidence that QAOA solved the problem. Most frequent sample: [1, 0, 0, 0, 1, 0, 0, 0] (feasible=True, utility=20.5).",
+    "no_speedup_note": "No quantum speedup is claimed; the exact enumeration of 256 states is classically trivial.",
+    "timing_note": "quantum elapsed_seconds includes the warm-start grid scan, the optimisation loop and a metadata-only transpile; exact elapsed_seconds covers only a 256-state loop and is not comparable. Timings vary between runs."
+  },
+  "constraint_checks": {
+    "quantum_plan_feasible": true,
+    "exact_plan_feasible": true,
+    "quantum_best_feasible_rechecked": true,
+    "exact_best_feasible_rechecked": true,
+    "failure_mask_respected": true,
+    "one_role_per_drone": true,
+    "single_valley": true,
+    "single_payload": true,
+    "battery_reserve_respected": true,
+    "plans_checked": [
+      "exact",
+      "quantum"
+    ],
+    "exact_states_enumerated_256": true,
+    "all_labelled_feasible_samples_pass": true
+  },
+  "software_versions": {
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "qiskit": "2.6.2",
+    "qiskit_algorithms": null,
+    "qiskit_algorithms_used": false
+  },
+  "notes": [
+    "All scenario data (utilities, energies, batteries, links, weights) are synthetic and illustrative."
+  ],
+  "scenario_meta": {
+    "name": "shadow_block",
+    "policy": "balanced",
+    "roles": [
+      {
+        "index": 0,
+        "drone": "A",
+        "kind": "H",
+        "name": "hill relay",
+        "utility": 1,
+        "energy": 40
+      },
+      {
+        "index": 1,
+        "drone": "A",
+        "kind": "N",
+        "name": "north recon",
+        "utility": 8,
+        "energy": 30
+      },
+      {
+        "index": 2,
+        "drone": "B",
+        "kind": "V",
+        "name": "primary valley relay",
+        "utility": 1,
+        "energy": 35
+      },
+      {
+        "index": 3,
+        "drone": "B",
+        "kind": "Deliver",
+        "name": "medical supplies",
+        "utility": 6,
+        "energy": 45
+      },
+      {
+        "index": 4,
+        "drone": "C",
+        "kind": "V",
+        "name": "alternate valley relay",
+        "utility": 1,
+        "energy": 30
+      },
+      {
+        "index": 5,
+        "drone": "C",
+        "kind": "E",
+        "name": "east recon",
+        "utility": 7,
+        "energy": 35
+      },
+      {
+        "index": 6,
+        "drone": "D",
+        "kind": "Deliver",
+        "name": "emergency supplies",
+        "utility": 6,
+        "energy": 40
+      },
+      {
+        "index": 7,
+        "drone": "D",
+        "kind": "S",
+        "name": "south recon",
+        "utility": 4,
+        "energy": 25
+      }
+    ],
+    "battery": {
+      "A": 85,
+      "B": 80,
+      "C": 60,
+      "D": 55
+    },
+    "reserve": 15,
+    "alpha": 0.05,
+    "relay_weight": 22,
+    "disabled_drones": [],
+    "link_nodes": [
+      "BASE",
+      "HILL",
+      "VALLEY_B",
+      "VALLEY_C",
+      "TEAM"
+    ],
+    "link_matrix": [
+      [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        0
+      ]
+    ],
+    "link_label": "illustrative terrain obstruction, not a real RF prediction",
+    "conflict_pairs": [
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        3,
+        6
+      ]
+    ],
+    "forbidden_indices": [],
+    "valley_link_flags": [
+      0,
+      1
+    ],
+    "relay_pairs": [
+      [
+        0,
+        4
+      ]
+    ]
+  },
+  "output_file": "artifacts/runs/shadow_block.json"
+}

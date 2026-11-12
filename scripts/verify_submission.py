@@ -6,6 +6,7 @@ import subprocess
 import sys
 import zipfile
 from pathlib import Path
+from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,8 +23,18 @@ def check() -> list[str]:
     if structural.returncode:
         issues.append("Submission structure gate failed:\n" + structural.stdout.strip())
     docx = ROOT / "report" / "SkyBridge_Hackathon_Report.docx"
+    document_text = ""
     if not docx.is_file() or not zipfile.is_zipfile(docx):
         issues.append("The official Word report is missing or invalid.")
+    else:
+        with zipfile.ZipFile(docx) as archive:
+            if not any(name.startswith("word/media/") for name in archive.namelist()):
+                issues.append("The Word report has no embedded architecture image.")
+            root = ElementTree.fromstring(archive.read("word/document.xml"))
+            document_text = " ".join(node.text or "" for node in root.iter() if node.tag.endswith("}t"))
+        for heading in ("Problem and intended users", "Objective and constraints", "Measured results and comparison", "Limitations and attribution"):
+            if heading not in document_text:
+                issues.append(f"The Word report is missing section: {heading}.")
     if not (ROOT / "artifacts" / "figures" / "architecture.png").is_file():
         issues.append("Architecture figure is missing.")
     runs = sorted((ROOT / "artifacts" / "runs").glob("*.json"))
@@ -37,6 +48,8 @@ def check() -> list[str]:
             continue
         if not record.get("quantum", {}).get("ran_qiskit"):
             issues.append(f"{path.name}: no verified Qiskit run.")
+        if path.stem not in document_text:
+            issues.append(f"{path.name}: absent from the Word report; regenerate it.")
         producer = str(record.get("producer", ""))
         if "reference_contract.py" in producer or "solver-evidence driver" in producer:
             issues.append(f"{path.name}: test-only scenario/evaluator; regenerate through production pipeline.")

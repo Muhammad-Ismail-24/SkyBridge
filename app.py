@@ -7,7 +7,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 RUNS = ROOT / "artifacts" / "runs"
 ORDER = ("A_H", "A_N", "B_V", "B_Delivery", "C_V", "C_E", "D_Delivery", "D_S")
-BATTERY = {"A": 85, "B": 80, "C": 60, "D": 55}  # architecture.md synthetic instance
 
 
 def validate_record(record: object) -> dict:
@@ -54,19 +53,71 @@ def assignment_rows(record: dict, result_key: str = "quantum") -> list[dict]:
     bits = record[result_key].get("best_feasible_bits" if result_key == "quantum" else "best_bits")
     if bits is None:
         return []
-    return [
-        {"Drone": drone, "Battery (synthetic units)": BATTERY[drone],
-         "Assignment": next((ORDER[i] for i in range(8) if bits[i] and ORDER[i].startswith(drone + "_")), "Idle"),
-         "Status": "Disabled" if drone == "B" and record["scenario"] == "relay_failure" else "Available"}
-        for drone in "ABCD"
-    ]
+    meta = record.get("scenario_meta") or {}
+    roles = meta.get("roles") or []
+    battery = meta.get("battery") or {}
+    disabled = set(meta.get("disabled_drones") or [])
+    rows = []
+    for drone in "ABCD":
+        active = next((r for i, r in enumerate(roles) if i < len(bits) and bits[i] and r.get("drone") == drone), None)
+        active_key = next((ORDER[i] for i, bit in enumerate(bits) if bit and ORDER[i].startswith(drone + "_")), None)
+        budget = battery.get(drone)
+        energy = active.get("energy", 0) if active else 0
+        rows.append({"Drone": drone, "Battery budget (synthetic units)": budget,
+                     "Remaining after role": budget - energy if isinstance(budget, (int, float)) else None,
+                     "Assignment": active.get("name", active_key) if active else (active_key or "Idle"),
+                     "Status": "Disabled" if drone in disabled else "Available"})
+    return rows
 
 
 def _source_label(record: dict) -> str:
     producer = str(record.get("producer", ""))
     if "reference_contract.py" in producer or "solver-evidence driver" in producer:
         return "Precomputed Qiskit solver evidence using a test-only scenario/evaluator; production pipeline integration pending."
+    if record.get("output_file") and record.get("scenario_meta"):
+        return f"Saved production pipeline run from {record['output_file']}; these are precomputed Qiskit results."
     return f"Precomputed run artifact: {producer or 'producer unspecified'}"
+
+
+def network_dot(record: dict, bits: list[int]) -> str:
+    """Draw only links present in Ismail's scenario adjacency matrix."""
+    meta = record.get("scenario_meta") or {}
+    nodes, matrix = meta.get("link_nodes"), meta.get("link_matrix")
+    if not isinstance(nodes, list) or not isinstance(matrix, list) or len(nodes) != len(matrix):
+        raise ValueError("Production link matrix is unavailable")
+    enabled = {"BASE": True, "TEAM": True, "HILL": bool(bits[0]),
+               "VALLEY_B": bool(bits[2]), "VALLEY_C": bool(bits[4])}
+    disabled = {"VALLEY_B"} if "B" in (meta.get("disabled_drones") or []) else set()
+    reachable = {"BASE"}
+    frontier = ["BASE"]
+    while frontier:
+        source = frontier.pop()
+        i = nodes.index(source)
+        if not isinstance(matrix[i], list) or len(matrix[i]) != len(nodes):
+            raise ValueError("Invalid link matrix row")
+        for j, linked in enumerate(matrix[i]):
+            neighbor = nodes[j]
+            if linked and neighbor not in reachable and enabled.get(neighbor) and neighbor not in disabled:
+                reachable.add(neighbor)
+                frontier.append(neighbor)
+    labels = {"BASE": "Base station", "HILL": "Hill relay · A", "VALLEY_B": "Valley relay · B",
+              "VALLEY_C": "Valley relay · C", "TEAM": "Rescue team"}
+    lines = ["graph SkyBridge {", 'rankdir=LR; graph [bgcolor="transparent"];',
+             'node [shape=box, style="rounded,filled", fontname="Arial"];']
+    for node in nodes:
+        color = "#fbd5d5" if node in disabled else "#d4f5e5" if node in reachable else "#fff0c2" if enabled.get(node) else "#e5e7eb"
+        lines.append(f'"{node}" [label="{labels.get(node, node)}", fillcolor="{color}"];')
+    for i, row in enumerate(matrix):
+        if not isinstance(row, list) or len(row) != len(nodes):
+            raise ValueError("Invalid link matrix row")
+        for j in range(i + 1, len(nodes)):
+            if row[j]:
+                active = enabled.get(nodes[i], False) and enabled.get(nodes[j], False)
+                broken = nodes[i] in disabled or nodes[j] in disabled
+                color = "#c0392b" if broken else "#149d72" if active and nodes[i] in reachable else "#d88900" if active else "#aab2bf"
+                lines.append(f'"{nodes[i]}" -- "{nodes[j]}" [color="{color}", style={"dashed" if broken else "solid"}, penwidth={3 if active or broken else 1.5}];')
+    lines.append("}")
+    return "\n".join(lines)
 
 
 def main() -> None:
@@ -99,41 +150,39 @@ def main() -> None:
     st.subheader("Mission assignments")
     rows = assignment_rows(record)
     if rows:
-        st.dataframe(rows, hide_index=True, use_container_width=True)
+        st.dataframe(rows, hide_index=True, width="stretch")
     else:
         st.warning("No feasible QAOA assignment was sampled.")
     st.subheader("Quantum and exact comparison")
     st.dataframe([
         {"Solver": "QAOA sampled best feasible", "Feasible": bool(quantum.get("best_feasible_bits")) and record.get("constraint_checks", {}).get("quantum_best_feasible_rechecked"), "Utility": quantum.get("utility"), "Bits x0…x7": quantum.get("best_feasible_bits"), "Mission": (quantum.get("breakdown") or {}).get("mission_score"), "Energy penalty": (quantum.get("breakdown") or {}).get("energy_penalty"), "Connectivity bonus": (quantum.get("breakdown") or {}).get("connectivity_bonus")},
         {"Solver": "Exact 256-state enumeration", "Feasible": record.get("constraint_checks", {}).get("exact_best_feasible_rechecked"), "Utility": exact.get("utility"), "Bits x0…x7": exact.get("best_bits"), "Mission": (exact.get("breakdown") or {}).get("mission_score"), "Energy penalty": (exact.get("breakdown") or {}).get("energy_penalty"), "Connectivity bonus": (exact.get("breakdown") or {}).get("connectivity_bonus")},
-    ], hide_index=True, use_container_width=True)
+    ], hide_index=True, width="stretch")
     st.caption(f"QAOA: {quantum.get('shots', 'unknown')} shots, p={quantum.get('qaoa_reps', 'unknown')}, seed={record.get('seed', 'unknown')}; feasible shot fraction={quantum.get('feasible_sample_fraction')}. Utilities are synthetic.")
+    if comparison.get("interpretation"):
+        st.info(comparison["interpretation"])
+    if comparison.get("no_speedup_note"):
+        st.caption(comparison["no_speedup_note"])
     st.subheader("Communication network")
-    network = record.get("network")
-    if network:
-        st.json(network)
+    if record.get("scenario_meta", {}).get("link_matrix") and quantum.get("best_feasible_bits"):
+        st.graphviz_chart(network_dot(record, quantum["best_feasible_bits"]), width="stretch")
+        st.caption("Green is reachable from base; amber is an active but disconnected region; gray is an available inactive link; red dashed links touch a disabled drone. Only edges in the saved adjacency matrix are drawn. " + record["scenario_meta"].get("link_label", ""))
     else:
-        st.warning("Production adjacency matrix and per-link status are not in this artifact. The connectivity metric above comes from the recorded solver evaluation; no links are drawn without topology data.")
+        st.warning("A valid production adjacency matrix or feasible QAOA assignment is unavailable; no radio links are drawn.")
     if record["scenario"] == "relay_failure":
         st.subheader("Self healing")
-        base_path = RUNS / "base.json"
-        if base_path.is_file():
-            try:
-                before = load_record(base_path)
-            except ValueError:
-                before = None
-            if before and before.get("policy") == record.get("policy"):
-                before_bits = before["quantum"].get("best_feasible_bits")
-                after_bits = quantum.get("best_feasible_bits")
-                if before_bits and after_bits:
-                    stages = st.columns(3)
-                    stages[0].markdown(f"**Normal**  \nBase → A hill → {'B' if before_bits[2] else 'C' if before_bits[4] else 'no'} valley → Team  \nConnected: {bool((before['quantum'].get('breakdown') or {}).get('connected_teams'))}  \nUtility: {before['quantum']['utility']:.2f}")
-                    stages[1].markdown("**B relay failure**  \nBase → A hill → **broken B link** → Team  \nConnected: False  \nUtility: not scored for the interrupted snapshot")
-                    stages[2].markdown(f"**Re-optimised**  \nBase → A hill → {'C' if after_bits[4] else 'no'} valley → Team  \nConnected: {bool((quantum.get('breakdown') or {}).get('connected_teams'))}  \nUtility: {quantum['utility']:.2f}")
-                    st.caption("Illustrative two-relay path from the specification. Normal and re-optimised assignments come from separate Qiskit evidence artifacts; the instant broken-link state is an inferred failure effect, not a pipeline measurement.")
+        healing = record.get("healing")
+        if healing:
+            stages = st.columns(3)
+            for col, key, title in zip(stages, ("before", "immediately_after_failure", "replanned"), ("Normal", "B failed before replanning", "Re-optimised")):
+                state = healing[key]["quantum"]
+                col.markdown(f"**{title}**")
+                col.write(", ".join(state.get("roles", [])))
+                col.metric("Utility", f"{state['breakdown']['total_utility']:.2f}")
+                col.write(f"Team connected: {bool(state.get('connected_teams'))}")
+            st.caption(healing.get("before_source", "") + ". The immediate failure state is evaluated without a new solve; replanned state comes from the QAOA run.")
         else:
-            st.write("Drone B is disabled in this run; its roles are unavailable to the optimiser.")
-        st.warning("Production topology and an independently recorded interruption snapshot are pending Ismail's pipeline output.")
+            st.warning("A three-stage healing trace is not in this run artifact.")
     with st.expander("Run provenance and solver metadata"):
         st.json({"producer": record.get("producer"), "generated_at": record.get("generated_at"), "quantum_run": quantum.get("run"), "software_versions": record.get("software_versions")})
 
