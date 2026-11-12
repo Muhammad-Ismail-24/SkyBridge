@@ -1,0 +1,118 @@
+{
+  "_note": "All values are synthetic and illustrative (architecture.md section 4). Drone B is disabled entirely.",
+  "name": "relay_failure",
+  "roles": [
+    {
+      "drone": "A",
+      "kind": "H",
+      "name": "hill relay",
+      "utility": 1,
+      "energy": 40
+    },
+    {
+      "drone": "A",
+      "kind": "N",
+      "name": "north recon",
+      "utility": 8,
+      "energy": 30
+    },
+    {
+      "drone": "B",
+      "kind": "V",
+      "name": "primary valley relay",
+      "utility": 1,
+      "energy": 35
+    },
+    {
+      "drone": "B",
+      "kind": "Deliver",
+      "name": "medical supplies",
+      "utility": 6,
+      "energy": 45
+    },
+    {
+      "drone": "C",
+      "kind": "V",
+      "name": "alternate valley relay",
+      "utility": 1,
+      "energy": 30
+    },
+    {
+      "drone": "C",
+      "kind": "E",
+      "name": "east recon",
+      "utility": 7,
+      "energy": 35
+    },
+    {
+      "drone": "D",
+      "kind": "Deliver",
+      "name": "emergency supplies",
+      "utility": 6,
+      "energy": 40
+    },
+    {
+      "drone": "D",
+      "kind": "S",
+      "name": "south recon",
+      "utility": 4,
+      "energy": 25
+    }
+  ],
+  "battery": {
+    "A": 85,
+    "B": 80,
+    "C": 60,
+    "D": 55
+  },
+  "reserve": 15,
+  "alpha": 0.05,
+  "disabled_drones": [
+    "B"
+  ],
+  "link_nodes": [
+    "BASE",
+    "HILL",
+    "VALLEY_B",
+    "VALLEY_C",
+    "TEAM"
+  ],
+  "link_matrix": [
+    [
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      0
+    ]
+  ],
+  "link_label": "illustrative terrain obstruction, not a real RF prediction"
+}
