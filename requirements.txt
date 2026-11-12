@@ -1,0 +1,8 @@
+# Versions observed in Zaheen's Python 3.12 solver environment, 12 Nov 2026.
+qiskit==2.6.2
+numpy==2.5.4
+scipy==1.18.1
+rustworkx==0.18.1
+pytest==9.2.0
+streamlit>=1.40,<2
+python-docx>=1.2,<2

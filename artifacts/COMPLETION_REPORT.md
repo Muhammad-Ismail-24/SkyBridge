@@ -76,3 +76,16 @@ Settings for every row: p=1, shots=2048, seed=42, COBYLA maxiter=80 after a 144-
 - `python scripts/verify_structure.py --phase scaffold --strict` — PASS.
 - `main` already contained Zaheen's solver commit `325893cc9b7c697fdd197147f4eca0ace11ec6e3`; this scaffold was prepared on `chore/skybridge-scaffold` to avoid overwriting that work.
 - Next: push scaffold branch, verify remote, then start Sufiyan's feature branch. No new Qiskit measurement was made in this milestone.
+
+## Sufiyan implementation milestone — 2026-11-12 18:15 PKT
+- Branch: `feature/sufiyan-dashboard-qa` from pushed scaffold commit `6faee91f561d9ddf7a25bab2e1562eedb942118d`.
+- Added `app.py`: reads saved JSON, validates eight-variable order and objective totals, shows four-drone assignments, solver comparison, provenance and truthful network-data pending state. It does not invent radio edges.
+- Added `tests/test_pipeline.py`: validates four solver-evidence artifacts, the dashboard boundary and malformed input; a production CLI test is skipped until Ismail's `run.py` exists.
+- Added `README.md`, `requirements.txt`, `scripts/generate_report.py`, `scripts/verify_submission.py`, and generated `report/SkyBridge_Hackathon_Report.docx` (embedded starter-package architecture figure; current measured solver-evidence table; production pipeline explicitly pending).
+- `python -m pytest tests/test_pipeline.py -q -p no:cacheprovider` — PASS: 5 passed, 1 skipped.
+- `python scripts/verify_structure.py --phase scaffold --strict` — PASS. The tracked phase remains scaffold because Ismail's required P0 files are absent.
+- `python -m pytest tests -q -p no:cacheprovider` — FAIL at collection: this Windows Python 3.14 environment lacks Qiskit. Zaheen's report records 48 solver tests passing on a separate Python 3.12.13 environment; those tests were not reproduced here.
+- `python scripts/verify_submission.py` — PENDING: missing production CLI/scenario/network/evaluator/pipeline and production-generated run JSON, so submission requirements are not yet met.
+- Report structural check with python-docx 1.2.0: 28 paragraphs, 2 tables, 1 embedded image. Visual render unavailable: the packaged renderer needs `pdf2image` and a bundled LibreOffice runtime not present in this Windows environment.
+- This machine has only Python 3.14.2. `python-docx==1.2.0` was installed into an external workspace dependency directory for report generation; Streamlit and the solver stack have not been installed or exercised here.
+- GitHub connector PR creation returned HTTP 403 (integration lacks access); scaffold branch itself is pushed and verified. Next: publish this feature branch, merge the scaffold via an authorized GitHub path, integrate Ismail's production pipeline, rerun the CLI and full tests, regenerate the report, verify video and links before submission.
