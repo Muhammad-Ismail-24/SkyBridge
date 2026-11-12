@@ -99,6 +99,13 @@ def test_negative_values():
         build_scenario(raw, "base", "balanced", 22)
 
 
+def test_swapped_role_order_rejected():
+    raw = _raw()
+    raw["roles"][2], raw["roles"][3] = raw["roles"][3], raw["roles"][2]
+    with pytest.raises(ValueError, match=r"roles\[2\] must be drone/kind"):
+        build_scenario(raw, "base", "balanced", 22)
+
+
 def test_unknown_disabled_drone():
     raw = _raw(); raw["disabled_drones"] = ["Z"]
     with pytest.raises(ValueError, match="not a known drone"):
@@ -207,9 +214,13 @@ def _raw_file(name):
     return json.loads((DATA / name).read_text(encoding="utf-8"))
 
 
-def _brute(file, policy):
+def _brute(file, policy, cut_hill_valley_b=False):
     """Hand-coded constraints/utility straight from JSON (no src.evaluate)."""
     raw = _raw_file(file)
+    if cut_hill_valley_b:  # shadow_block = base with the HILL--VALLEY_B edge removed
+        n_ = raw["link_nodes"]
+        i_, j_ = n_.index("HILL"), n_.index("VALLEY_B")
+        raw["link_matrix"][i_][j_] = raw["link_matrix"][j_][i_] = 0
     w = _raw_file("policy_presets.json")[policy]
     v = [r["utility"] for r in raw["roles"]]
     e = [r["energy"] for r in raw["roles"]]
@@ -239,6 +250,8 @@ GOLDEN = [
     ("base", "base.json", "mission_first", 63, (0, 1, 0, 1, 0, 1, 0, 1), 18.25),
     ("relay_failure", "relay_failure.json", "balanced", 27, (1, 0, 0, 0, 1, 0, 1, 0), 24.5),
     ("relay_failure", "relay_failure.json", "mission_first", 27, (0, 1, 0, 0, 0, 1, 1, 0), 15.75),
+    ("base", "base.json", "coverage_first", 63, (1, 0, 1, 0, 0, 1, 1, 0), 42.5),
+    ("relay_failure", "relay_failure.json", "coverage_first", 27, (1, 0, 0, 0, 1, 0, 1, 0), 37.5),
 ]
 
 
@@ -256,3 +269,41 @@ def test_brute_force_golden(name, file, policy, n_feas, best_bits, best_u):
     for x in all_x:
         if x not in feas:
             assert score_feasible(x, s)["total_utility"] is None
+
+
+
+@pytest.mark.parametrize("policy", ["mission_first", "balanced", "coverage_first"])
+def test_brute_force_shadow_block(policy):
+    """shadow_block checked against the independent in-test brute force (no remembered numbers)."""
+    feas, best, best_u = _brute("base.json", policy, cut_hill_valley_b=True)
+    s = load_scenario("shadow_block", policy)
+    all_x = list(itertools.product((0, 1), repeat=8))
+    assert {x for x in all_x if is_feasible(x, s)} == feas
+    scores = {x: score_feasible(x, s)["total_utility"] for x in feas}
+    top = max(scores.values())
+    assert top == pytest.approx(best_u)
+    assert [x for x, t in scores.items() if abs(t - top) < 1e-9] == [best]
+    for x in feas:  # every plan scored the same by the hand-coded formula
+        assert scores[x] == pytest.approx(_brute_u(x, "base.json", policy, True))
+
+
+def _brute_u(x, file, policy, cut):
+    raw = _raw_file(file)
+    n, m = raw["link_nodes"], raw["link_matrix"]
+    if cut:
+        i, j = n.index("HILL"), n.index("VALLEY_B")
+        m[i][j] = m[j][i] = 0
+    edge = lambda a, b: m[n.index(a)][n.index(b)]  # noqa: E731
+    lb = edge("BASE", "HILL") * edge("HILL", "VALLEY_B") * edge("VALLEY_B", "TEAM")
+    lc = edge("BASE", "HILL") * edge("HILL", "VALLEY_C") * edge("VALLEY_C", "TEAM")
+    w = _raw_file("policy_presets.json")[policy]
+    return (sum((r["utility"] - raw["alpha"] * r["energy"]) * xi for r, xi in zip(raw["roles"], x))
+            + w * x[0] * (lb * x[2] + lc * x[4]))
+
+
+def test_score_degraded_on_post_failure_scenario():
+    """Regression: passing relay_failure (B already disabled) must still report
+    the pre-failure connectivity as lost."""
+    rf = load_scenario("relay_failure", "balanced")
+    d = score_degraded((1, 0, 1, 0, 0, 1, 1, 0), "B", rf)
+    assert d["connectivity_lost"] is True and d["lost_roles"] == [2]

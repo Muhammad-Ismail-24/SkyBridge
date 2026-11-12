@@ -16,6 +16,11 @@ SCENARIOS = ("base", "relay_failure", "shadow_block")
 POLICIES = ("mission_first", "balanced", "coverage_first")
 N_ROLES = 8
 BASE_NODES = ("BASE", "HILL", "VALLEY_B", "VALLEY_C", "TEAM")
+ROLE_KEYS = ("A_H", "A_N", "B_V", "B_Delivery", "C_V", "C_E", "D_Delivery", "D_S")
+HILL, VALLEY_B, VALLEY_C = 0, 2, 4
+# (drone, kind) required at each index; conflict pairs and QUBO rely on this order.
+CANONICAL_ROLES = (("A", "H"), ("A", "N"), ("B", "V"), ("B", "Deliver"),
+                   ("C", "V"), ("C", "E"), ("D", "Deliver"), ("D", "S"))
 
 
 @dataclass
@@ -27,6 +32,11 @@ class Role:
     name: str
     utility: float
     energy: float
+
+    @property
+    def key(self) -> str:
+        """Canonical role label, e.g. 'A_H' (read by src/model.py)."""
+        return ROLE_KEYS[self.index]
 
 
 @dataclass
@@ -73,6 +83,17 @@ class Scenario:
                     * self._edge(v, "TEAM"))
         return flag("VALLEY_B"), flag("VALLEY_C")
 
+    @property
+    def relay_reward(self) -> float:
+        """Alias of relay_weight (W), the field name src/model.py reads."""
+        return self.relay_weight
+
+    @property
+    def relay_pairs(self) -> list[tuple[int, int]]:
+        """(hill, valley) index pairs whose full relay path exists in the link matrix."""
+        l_b, l_c = self.valley_link_flags
+        return [p for p, ok in (((HILL, VALLEY_B), l_b), ((HILL, VALLEY_C), l_c)) if ok]
+
     def to_dict(self) -> dict:
         """JSON-serialisable view for run output."""
         return {
@@ -87,6 +108,7 @@ class Scenario:
             "conflict_pairs": [list(p) for p in self.conflict_pairs],
             "forbidden_indices": self.forbidden_indices,
             "valley_link_flags": list(self.valley_link_flags),
+            "relay_pairs": [list(p) for p in self.relay_pairs],
         }
 
 
@@ -112,6 +134,11 @@ def _validate(raw: dict, source: str) -> None:
         for key in ("drone", "kind", "name", "utility", "energy"):
             if key not in r:
                 raise ValueError(f"{source}: roles[{i}] missing field '{key}'")
+        if (r["drone"], r["kind"]) != CANONICAL_ROLES[i]:
+            raise ValueError(
+                f"{source}: roles[{i}] must be drone/kind {CANONICAL_ROLES[i]} "
+                f"({ROLE_KEYS[i]}), got ({r['drone']!r}, {r['kind']!r}); "
+                "role order is fixed")
         _num(r["utility"], f"{source}: roles[{i}].utility")
         _num(r["energy"], f"{source}: roles[{i}].energy")
         drones.add(r["drone"])

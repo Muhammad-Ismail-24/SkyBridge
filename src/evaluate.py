@@ -69,7 +69,10 @@ def score_degraded(bits: tuple[int, ...], failed_drone: str, scenario: Scenario)
     """Score a pre-failure plan after removing the failed drone's roles (no re-plan)."""
     if failed_drone not in scenario.battery:
         raise ValueError(f"unknown drone '{failed_drone}'")
-    before = score_feasible(bits, scenario)
+    # Pre-failure score: the failed drone is still available, even if `scenario`
+    # is already the post-failure instance (e.g. relay_failure).
+    pre = replace(scenario, disabled_drones=scenario.disabled_drones - {failed_drone})
+    before = score_feasible(bits, pre)
     lost = [r.index for r, x in zip(scenario.roles, bits)
             if x and r.drone == failed_drone] if _valid_bits(bits) else []
     after_bits = tuple(0 if i in lost else x for i, x in enumerate(bits))
