@@ -1,0 +1,15 @@
+name: Verify SkyBridge repository structure
+on:
+  push:
+  pull_request:
+jobs:
+  structure:
+    name: Verify SkyBridge repository structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Enforce tracked phase and canonical folders
+        run: python scripts/verify_structure.py --phase tracked --strict

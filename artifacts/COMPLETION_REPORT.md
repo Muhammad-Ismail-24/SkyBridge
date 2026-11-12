@@ -68,3 +68,11 @@ Settings for every row: p=1, shots=2048, seed=42, COBYLA maxiter=80 after a 144-
 ## Source attribution (if any code reused)
 - No third-party code was copied. It uses Qiskit public APIs (`qaoa_ansatz`, `SparsePauliOp`, `StatevectorEstimator`, `StatevectorSampler`, `transpile`) and SciPy COBYLA.
 - The INTERP warm-start schedule follows Zhou, Wang, Choi, Pichler, Lukin, *Phys. Rev. X* 10, 021067 (2020). It was reimplemented, not copied.
+
+## Sufiyan scaffold milestone — 2026-11-12 18:03 PKT
+- The starter ZIP's `skybridge/` contents were copied into the cloned repository root without replacing Zaheen's existing files. Existing `architecture.md`, `work_division.md`, and `.gitignore` were preserved.
+- Added `.skybridge-phase`, GitHub Actions structure workflow, bootstrap/verifier scripts, canonical directory markers, and the package's architecture figure.
+- `python scripts/bootstrap_structure.py` — PASS: canonical directories present.
+- `python scripts/verify_structure.py --phase scaffold --strict` — PASS.
+- `main` already contained Zaheen's solver commit `325893cc9b7c697fdd197147f4eca0ace11ec6e3`; this scaffold was prepared on `chore/skybridge-scaffold` to avoid overwriting that work.
+- Next: push scaffold branch, verify remote, then start Sufiyan's feature branch. No new Qiskit measurement was made in this milestone.
